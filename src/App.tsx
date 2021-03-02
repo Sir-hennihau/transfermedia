@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 
 export const App = () => {
   const [logs, setLogs] = useState<string[]>([]);
-  const [response, setResponse] = useState<string[]>([]);
+
+  const [subscriptionResponse, setSubscriptionResponse] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     const connection = new autobahn.Connection({
@@ -12,8 +15,15 @@ export const App = () => {
     });
 
     connection.onopen = (session, details) => {
+      session
+        .call<string[]>("com.filmdatabox.democontrol.journal")
+        .then((response) => {
+          setLogs(response);
+        })
+        .catch((error) => console.log("error", error));
+
       session.subscribe("com.filmdatabox.democontrol.journal", (response) => {
-        setResponse(response);
+        setSubscriptionResponse(response);
       });
     };
 
@@ -21,8 +31,8 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    setLogs([...logs, ...response]);
-  }, [response]);
+    setLogs([...logs, ...subscriptionResponse]);
+  }, [subscriptionResponse]);
 
   return (
     <div className="App">
