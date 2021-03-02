@@ -1,5 +1,6 @@
 import autobahn from "autobahn";
 import React from "react";
+import { createConnection } from "../Utils/api";
 import { Media as MediaType } from "../Utils/types";
 import { MediaInformation } from "./Components/mediaInformation";
 import { MediaTitle } from "./Components/mediaTitle";
@@ -9,14 +10,14 @@ interface MediaProps {
   media: MediaType;
 }
 
+/**
+ * Displays a single media device. Users can toggle its attached status.
+ */
 export const Media = ({
   media: { description, isAttached, label, name },
 }: MediaProps) => {
   const onClick = () => {
-    const connection = new autobahn.Connection({
-      url: "ws://testassignment.filmdatabox.com:8250/ws",
-      realm: "democontrol",
-    });
+    const connection = createConnection();
 
     connection.onopen = (session, details) => {
       session.call("com.filmdatabox.democontrol.change_medium", [
@@ -27,6 +28,7 @@ export const Media = ({
 
     connection.open();
   };
+
   return (
     <MediaContainer>
       <MediaTitle>{name}</MediaTitle>

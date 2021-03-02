@@ -1,9 +1,13 @@
 import autobahn from "autobahn";
 import React, { useEffect, useState } from "react";
 import { Media } from "./Components/media";
-import { getMediaFromWebsocketStateResponse } from "./Utils/api";
-
+import {
+  createConnection,
+  getMediaFromWebsocketStateResponse,
+} from "./Utils/api";
 import { Media as MediaType, WebsocketStateResponse } from "./Utils/types";
+
+const MAX_LOGS_LENGTH = 50;
 
 export const App = () => {
   const [logs, setLogs] = useState<string[]>([]);
@@ -14,13 +18,8 @@ export const App = () => {
 
   const [media, setMedia] = useState<MediaType[]>();
 
-  const MAX_LOGS_LENGTH = 50;
-
   useEffect(() => {
-    const connection = new autobahn.Connection({
-      url: "ws://testassignment.filmdatabox.com:8250/ws",
-      realm: "democontrol",
-    });
+    const connection = createConnection();
 
     connection.onopen = (session, details) => {
       session
@@ -71,8 +70,6 @@ export const App = () => {
 
     setLogs(newLogs);
   });
-
-  console.log("media", media);
 
   return (
     <div className="App">
