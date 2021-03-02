@@ -1,11 +1,39 @@
-import React from "react";
+import autobahn from "autobahn";
+import React, { useEffect, useState } from "react";
 
-function App() {
+export const App = () => {
+  const [logs, setLogs] = useState<string[]>([]);
+  const [response, setResponse] = useState<[]>([]);
+
+  useEffect(() => {
+    const connection = new autobahn.Connection({
+      url: "ws://testassignment.filmdatabox.com:8250/ws",
+      realm: "democontrol",
+    });
+
+    connection.onopen = (session, details) => {
+      session.subscribe("com.filmdatabox.democontrol.journal", (response) => {
+        console.log("response", response);
+        console.log("logs", logs);
+        console.log("[...logs, ...response]", [...logs, ...response]);
+
+        setResponse(response);
+      });
+    };
+
+    connection.open();
+  }, []);
+
+  useEffect(() => {
+    setLogs([...logs, ...response]);
+  }, [response]);
+
   return (
     <div className="App">
-      <h1>Hello World</h1>
+      <h1>Film Data Box Journal</h1>
+      {logs?.map((log, index) => (
+        <p key={index}>{log}</p>
+      ))}
     </div>
   );
-}
-
-export default App;
+};
