@@ -8,6 +8,8 @@ export const App = () => {
     []
   );
 
+  const MAX_LOGS_LENGTH = 50;
+
   useEffect(() => {
     const connection = new autobahn.Connection({
       url: "ws://testassignment.filmdatabox.com:8250/ws",
@@ -33,6 +35,16 @@ export const App = () => {
   useEffect(() => {
     setLogs([...logs, ...subscriptionResponse]);
   }, [subscriptionResponse]);
+
+  useEffect(() => {
+    if (logs.length <= MAX_LOGS_LENGTH) {
+      return;
+    }
+
+    const newLogs = logs.slice(logs.length - MAX_LOGS_LENGTH, logs.length);
+
+    setLogs(newLogs);
+  });
 
   return (
     <div className="App">
