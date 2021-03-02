@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 export const App = () => {
   const [logs, setLogs] = useState<string[]>([]);
-  const [response, setResponse] = useState<[]>([]);
+  const [response, setResponse] = useState<string[]>([]);
 
   useEffect(() => {
     const connection = new autobahn.Connection({
