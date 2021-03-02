@@ -13,10 +13,6 @@ export const App = () => {
 
     connection.onopen = (session, details) => {
       session.subscribe("com.filmdatabox.democontrol.journal", (response) => {
-        console.log("response", response);
-        console.log("logs", logs);
-        console.log("[...logs, ...response]", [...logs, ...response]);
-
         setResponse(response);
       });
     };
